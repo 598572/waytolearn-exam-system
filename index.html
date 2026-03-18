@@ -57,69 +57,61 @@
     .page-btn { padding: 6px 12px; border: 1px solid #d9d9d9; background: white; border-radius: 4px; cursor: pointer; font-size: 14px; }
     .page-btn.active { background: #667eea; color: white; border-color: #667eea; }
     .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .placeholder-page { text-align: center; padding: 100px 20px; color: #999; }
+    .exam-section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .exam-section h2 { font-size: 18px; margin-bottom: 15px; color: #333; }
+    .chart-section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .chart-section h2 { font-size: 18px; margin-bottom: 15px; color: #333; }
+    .chart-placeholder { height: 300px; background: #f5f7fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .subject-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn { padding: 8px 16px; border: 1px solid #d9d9d9; background: white; border-radius: 6px; cursor: pointer; }
+    .tab-btn.active { background: #667eea; color: white; border-color: #667eea; }
+    .post-card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .post-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .post-author { font-weight: 600; color: #667eea; }
+    .post-time { color: #999; font-size: 13px; }
+    .post-content { color: #333; margin-bottom: 15px; line-height: 1.6; }
+    .post-footer { display: flex; gap: 20px; color: #999; font-size: 14px; }
+    .plan-card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .plan-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .plan-title { font-weight: 600; color: #333; }
+    .plan-progress { color: #667eea; font-weight: 500; }
+    .progress-bar { height: 8px; background: #f0f0f0; border-radius: 4px; overflow: hidden; margin: 10px 0; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); }
+    .plan-footer { display: flex; justify-content: space-between; color: #999; font-size: 13px; }
+    .course-list { display: grid; gap: 15px; }
+    .course-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .course-title { font-weight: 600; color: #333; margin-bottom: 8px; }
+    .course-info { color: #999; font-size: 14px; margin-bottom: 15px; }
+    .profile-section { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+    .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-weight: bold; }
+    .profile-name { font-size: 20px; font-weight: 600; color: #333; }
+    .profile-email { color: #999; margin-top: 5px; }
+    .menu-list { background: #f5f7fa; border-radius: 8px; overflow: hidden; }
+    .menu-item { padding: 15px 20px; background: white; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; cursor: pointer; }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item:hover { background: #f5f7fa; }
+    .countdown-badge { padding: 4px 12px; border-radius: 4px; background: #e6f7ff; color: #1890ff; font-size: 12px; font-weight: 500; }
   </style>
 </head>
 <body>
-  <div id="app">
-    <header class="header">
-      <div class="logo">
-        <div class="logo-icon">W</div>
-        <span>WaytoLearn 备考管理系统</span>
-      </div>
-      <div class="user-info" id="userName">择风</div>
-    </header>
-    <div class="main-container">
-      <aside class="sidebar" id="sidebar">
-        <!-- 导航由 JS 生成 -->
-      </aside>
-      <main class="content">
-        <div id="homePage">
-          <div class="page-header"><h1>📋 首页 - 学习任务管理</h1></div>
-          <div class="stats-row">
-            <div class="stat-card"><div class="stat-label">总学习时长</div><div class="stat-value primary"><span id="totalDuration">328</span><span style="font-size:16px">分钟</span></div></div>
-            <div class="stat-card"><div class="stat-label">今日学习</div><div class="stat-value"><span id="todayDuration">96</span><span style="font-size:16px">分钟</span></div></div>
-            <div class="stat-card"><div class="stat-label">待完成任务</div><div class="stat-value warning" id="pendingTasks">42</div></div>
-            <div class="stat-card"><div class="stat-label">距离考试</div><div class="stat-value success"><span id="countdownDays">26</span><span style="font-size:16px">天</span></div></div>
-          </div>
-          <div class="countdown-card">
-            <div class="countdown-title">⏰ 距离安徽省考 2026/03/14 09:00 还有</div>
-            <div class="countdown-timer">
-              <div class="countdown-item"><span class="countdown-number" id="cdDays">26</span><span class="countdown-label">天</span></div>
-              <div class="countdown-item"><span class="countdown-number" id="cdHours">14</span><span class="countdown-label">时</span></div>
-              <div class="countdown-item"><span class="countdown-number" id="cdMinutes">32</span><span class="countdown-label">分</span></div>
-              <div class="countdown-item"><span class="countdown-number" id="cdSeconds">45</span><span class="countdown-label">秒</span></div>
-            </div>
-          </div>
-          <div class="quick-actions">
-            <div class="action-card"><div class="action-icon">📝</div><div class="action-name">单个任务录入</div></div>
-            <div class="action-card"><div class="action-icon">📅</div><div class="action-name">上传考试信息</div></div>
-            <div class="action-card"><div class="action-icon">❌</div><div class="action-name">行测错题上传</div></div>
-            <div class="action-card"><div class="action-icon">📤</div><div class="action-name">批量添加任务</div></div>
-          </div>
-          <div class="data-table-container">
-            <div class="table-toolbar">
-              <div class="table-filters">
-                <button class="filter-btn">🔍 筛选</button>
-                <button class="filter-btn">📊 分组</button>
-                <button class="filter-btn">🔃 排序</button>
-              </div>
-              <div class="search-box"><input id="searchInput" placeholder="搜索任务..."><span>🔍</span></div>
-            </div>
-            <table class="data-table">
-              <thead><tr><th>任务名</th><th>任务类型</th><th>预计完成时间</th><th>开始时间</th><th>学习时长 (分钟)</th><th>状态</th><th>学习人</th><th>操作</th></tr></thead>
-              <tbody id="taskTableBody">
-                <!-- 任务由 JS 生成 -->
-              </tbody>
-            </table>
-            <div class="pagination"><div class="page-info">共 <span id="taskCount">8</span> 条</div><div class="page-controls"><button class="page-btn" disabled>上一页</button><button class="page-btn active">1</button><button class="page-btn">下一页</button></div></div>
-          </div>
-        </div>
-        <div id="otherPage" class="placeholder-page" style="display:none;"><h1 id="otherPageTitle">考试情况</h1><p>页面开发中...</p></div>
-      </main>
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">W</div>
+      <span>WaytoLearn 备考管理系统</span>
     </div>
+    <div class="user-info" id="userName">择风</div>
+  </header>
+  <div class="main-container">
+    <aside class="sidebar" id="sidebar">
+      <!-- 导航由 JS 生成 -->
+    </aside>
+    <main class="content" id="content">
+      <!-- 内容由 JS 动态渲染 -->
+    </main>
   </div>
   <script src="feishu-api.js"></script>
+  <script src="pages.js"></script>
   <script>
     // 导航菜单
     const navItems = [
@@ -133,17 +125,13 @@
       { key: 'profile', title: '我的', icon: '⚙️' }
     ];
 
-    // 任务数据（从飞书加载）
-    let tasks = [];
-    let timerStartTimes = {}; // 记录每个任务的开始计时时间
-
     let currentPage = 'home';
 
     // 渲染导航
     function renderNav() {
       const sidebar = document.getElementById('sidebar');
       sidebar.innerHTML = navItems.map(item => 
-        `<div class="nav-item ${item.key === currentPage ? 'active' : ''}" onclick="switchPage('${item.key}')">
+        `<div class="nav-item ${item.key === currentPage ? 'active' : ''}" data-page="${item.key}" onclick="switchPage('${item.key}')">
           <span>${item.icon}</span>
           <span>${item.title}</span>
         </div>`
@@ -154,144 +142,28 @@
     function switchPage(page) {
       currentPage = page;
       renderNav();
-      if (page === 'home') {
-        document.getElementById('homePage').style.display = 'block';
-        document.getElementById('otherPage').style.display = 'none';
-      } else {
-        document.getElementById('homePage').style.display = 'none';
-        document.getElementById('otherPage').style.display = 'block';
-        document.getElementById('otherPageTitle').textContent = navItems.find(i => i.key === page).title;
-      }
-    }
-
-    // 获取状态样式
-    function getStatusClass(status) {
-      if (status === '未开始') return 'pending';
-      if (status === '进行中') return 'progress';
-      if (status === '已完成') return 'completed';
-      return 'pending';
-    }
-
-    // 获取操作文本
-    function getActionText(status) {
-      if (status === '未开始') return '开始计时';
-      if (status === '进行中') return '继续';
-      return '查看';
-    }
-
-    // 渲染任务表格
-    function renderTasks() {
-      const tbody = document.getElementById('taskTableBody');
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = tasks.filter(t => t.task_name.toLowerCase().includes(search));
-      
-      tbody.innerHTML = filtered.map((task, index) => 
-        `<tr>
-          <td>${task.task_name}</td>
-          <td>${task.task_type}</td>
-          <td>${task.expected_finish_time}</td>
-          <td>${task.start_time || '-'}</td>
-          <td>${task.duration_minutes || 0}</td>
-          <td><span class="status-tag status-${getStatusClass(task.status)}">${task.status}</span></td>
-          <td>${task.learner || '-'}</td>
-          <td>
-            <button class="action-btn" onclick="handleTaskAction('${task.id}', '${task.status}', ${index})">${getActionText(task.status)}</button>
-            <button class="action-btn secondary" onclick="editTask('${task.id}')">编辑</button>
-          </td>
-        </tr>`
-      ).join('');
-      
-      document.getElementById('taskCount').textContent = filtered.length;
-    }
-
-    // 处理任务操作
-    async function handleTaskAction(recordId, status, index) {
-      if (status === '未开始') {
-        // 开始计时
-        const success = await startTimer(recordId);
-        if (success) {
-          timerStartTimes[recordId] = Date.now();
-          tasks[index].status = '进行中';
-          tasks[index].start_time = new Date().toLocaleString();
-          renderTasks();
-          alert('开始计时！');
-        }
-      } else if (status === '进行中') {
-        // 完成计时
-        const startTime = timerStartTimes[recordId] || Date.now();
-        const duration = Math.floor((Date.now() - startTime) / 60000); // 分钟
-        const success = await completeTimer(recordId, duration);
-        if (success) {
-          tasks[index].status = '已完成';
-          tasks[index].duration_minutes = duration;
-          renderTasks();
-          alert(`完成！学习时长：${duration}分钟`);
-        }
-      } else {
-        // 已完成 - 查看详情
-        alert('任务已完成！');
-      }
-    }
-
-    // 编辑任务
-    function editTask(recordId) {
-      const task = tasks.find(t => t.id === recordId);
-      if (!task) return;
-      
-      const newName = prompt('修改任务名:', task.task_name);
-      if (newName && newName !== task.task_name) {
-        updateTask(recordId, { '任务名': newName }).then(success => {
-          if (success) {
-            task.task_name = newName;
-            renderTasks();
-            alert('修改成功！');
-          }
-        });
-      }
-    }
-
-    // 倒计时
-    function startCountdown() {
-      const target = new Date('2026-03-14T09:00:00');
-      setInterval(() => {
-        const now = new Date();
-        const diff = target - now;
-        if (diff > 0) {
-          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-          document.getElementById('cdDays').textContent = days;
-          document.getElementById('cdHours').textContent = hours;
-          document.getElementById('cdMinutes').textContent = minutes;
-          document.getElementById('cdSeconds').textContent = seconds;
-          document.getElementById('countdownDays').textContent = days;
-        }
-      }, 1000);
+      renderPage(page);
     }
 
     // 初始化
     document.addEventListener('DOMContentLoaded', async () => {
       renderNav();
       await loadTasksFromFeishu();
-      startCountdown();
-      document.getElementById('searchInput').addEventListener('input', renderTasks);
+      renderPage('home');
     });
 
     // 从飞书加载任务
     async function loadTasksFromFeishu() {
       tasks = await getTasks();
-      renderTasks();
-      updateStats();
+      if (currentPage === 'home') {
+        renderTasks();
+        updateStats();
+      }
     }
 
-    // 更新统计
-    function updateStats() {
-      const total = tasks.reduce((sum, t) => sum + (t.duration_minutes || 0), 0);
-      const pending = tasks.filter(t => t.status === '未开始').length;
-      document.getElementById('totalDuration').textContent = total;
-      document.getElementById('pendingTasks').textContent = pending;
-    }
+    // 全局函数
+    let tasks = [];
+    window.tasks = tasks;
   </script>
 </body>
 </html>
