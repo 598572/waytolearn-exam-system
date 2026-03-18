@@ -1,0 +1,19 @@
+{
+  "name": "waytolearn-exam-system",
+  "version": "1.0.0",
+  "description": "WaytoLearn 备考管理系统 - 飞书轻应用",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.4.0",
+    "element-plus": "^2.5.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "vite": "^5.0.0"
+  }
+}
