@@ -119,6 +119,7 @@
       </main>
     </div>
   </div>
+  <script src="feishu-api.js"></script>
   <script>
     // 导航菜单
     const navItems = [
@@ -132,17 +133,9 @@
       { key: 'profile', title: '我的', icon: '⚙️' }
     ];
 
-    // 任务数据
-    const tasks = [
-      { id: 1, task_name: '逻辑：花生逻辑 600 题 1 套', task_type: '逻辑推理', expected_finish_time: '2026/02/23', start_time: '2026/02/23 10:00', duration_minutes: 17, status: '未开始', learner: '择风' },
-      { id: 2, task_name: '言语：花生 600 题 1 套', task_type: '言语理解', expected_finish_time: '2026/02/23', start_time: '2026/02/23 14:00', duration_minutes: 96, status: '未开始', learner: '择风' },
-      { id: 3, task_name: '资料：刷题男孩毛娃儿刷题课 19、20', task_type: '资料分析', expected_finish_time: '2026/02/23', start_time: '2026/02/23 16:00', duration_minutes: 66, status: '未开始', learner: '择风' },
-      { id: 4, task_name: '言语：花生 600 题 1 套', task_type: '言语理解', expected_finish_time: '2026/02/21', start_time: '2026/02/21 09:00', duration_minutes: 54, status: '进行中', learner: '罗佳' },
-      { id: 5, task_name: '资料：刷题男孩毛娃儿刷题课 17、18', task_type: '资料分析', expected_finish_time: '2026/02/21', start_time: '2026/02/21 14:00', duration_minutes: 58, status: '已完成', learner: '罗佳' },
-      { id: 6, task_name: '小马哥申论 16（大作文 2）', task_type: '申论', expected_finish_time: '2026/02/20', start_time: '2026/02/20 10:00', duration_minutes: 120, status: '已完成', learner: '择风' },
-      { id: 7, task_name: '言语：郭熙 100 题第 10 节', task_type: '言语理解', expected_finish_time: '2026/02/17', start_time: '2026/02/17 09:00', duration_minutes: 45, status: '已完成', learner: '罗佳' },
-      { id: 8, task_name: '资料：刷题男孩毛娃儿刷题课 9、10', task_type: '资料分析', expected_finish_time: '2026/02/17', start_time: '2026/02/17 14:00', duration_minutes: 63, status: '已完成', learner: '择风' }
-    ];
+    // 任务数据（从飞书加载）
+    let tasks = [];
+    let timerStartTimes = {}; // 记录每个任务的开始计时时间
 
     let currentPage = 'home';
 
@@ -192,20 +185,69 @@
       const search = document.getElementById('searchInput').value.toLowerCase();
       const filtered = tasks.filter(t => t.task_name.toLowerCase().includes(search));
       
-      tbody.innerHTML = filtered.map(task => 
+      tbody.innerHTML = filtered.map((task, index) => 
         `<tr>
           <td>${task.task_name}</td>
           <td>${task.task_type}</td>
           <td>${task.expected_finish_time}</td>
-          <td>${task.start_time}</td>
-          <td>${task.duration_minutes}</td>
+          <td>${task.start_time || '-'}</td>
+          <td>${task.duration_minutes || 0}</td>
           <td><span class="status-tag status-${getStatusClass(task.status)}">${task.status}</span></td>
-          <td>${task.learner}</td>
-          <td><button class="action-btn">${getActionText(task.status)}</button><button class="action-btn secondary">编辑</button></td>
+          <td>${task.learner || '-'}</td>
+          <td>
+            <button class="action-btn" onclick="handleTaskAction('${task.id}', '${task.status}', ${index})">${getActionText(task.status)}</button>
+            <button class="action-btn secondary" onclick="editTask('${task.id}')">编辑</button>
+          </td>
         </tr>`
       ).join('');
       
       document.getElementById('taskCount').textContent = filtered.length;
+    }
+
+    // 处理任务操作
+    async function handleTaskAction(recordId, status, index) {
+      if (status === '未开始') {
+        // 开始计时
+        const success = await startTimer(recordId);
+        if (success) {
+          timerStartTimes[recordId] = Date.now();
+          tasks[index].status = '进行中';
+          tasks[index].start_time = new Date().toLocaleString();
+          renderTasks();
+          alert('开始计时！');
+        }
+      } else if (status === '进行中') {
+        // 完成计时
+        const startTime = timerStartTimes[recordId] || Date.now();
+        const duration = Math.floor((Date.now() - startTime) / 60000); // 分钟
+        const success = await completeTimer(recordId, duration);
+        if (success) {
+          tasks[index].status = '已完成';
+          tasks[index].duration_minutes = duration;
+          renderTasks();
+          alert(`完成！学习时长：${duration}分钟`);
+        }
+      } else {
+        // 已完成 - 查看详情
+        alert('任务已完成！');
+      }
+    }
+
+    // 编辑任务
+    function editTask(recordId) {
+      const task = tasks.find(t => t.id === recordId);
+      if (!task) return;
+      
+      const newName = prompt('修改任务名:', task.task_name);
+      if (newName && newName !== task.task_name) {
+        updateTask(recordId, { '任务名': newName }).then(success => {
+          if (success) {
+            task.task_name = newName;
+            renderTasks();
+            alert('修改成功！');
+          }
+        });
+      }
     }
 
     // 倒计时
@@ -229,12 +271,27 @@
     }
 
     // 初始化
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       renderNav();
-      renderTasks();
+      await loadTasksFromFeishu();
       startCountdown();
       document.getElementById('searchInput').addEventListener('input', renderTasks);
     });
+
+    // 从飞书加载任务
+    async function loadTasksFromFeishu() {
+      tasks = await getTasks();
+      renderTasks();
+      updateStats();
+    }
+
+    // 更新统计
+    function updateStats() {
+      const total = tasks.reduce((sum, t) => sum + (t.duration_minutes || 0), 0);
+      const pending = tasks.filter(t => t.status === '未开始').length;
+      document.getElementById('totalDuration').textContent = total;
+      document.getElementById('pendingTasks').textContent = pending;
+    }
   </script>
 </body>
 </html>
