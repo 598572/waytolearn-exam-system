@@ -143,7 +143,29 @@
 
     // 页面切换
     function switchPage(page) {
-      alert(page + ' 页面开发中...');
+      // 更新导航状态
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.textContent.includes(getPageIcon(page))) {
+          item.classList.add('active');
+        }
+      });
+      
+      if (page === 'home') {
+        // 首页已加载
+      } else {
+        document.getElementById('content').innerHTML = '<div class="page-header"><h1>' + getPageTitle(page) + '</h1></div><div style="text-align:center;padding:100px;color:#999;">🚧 页面开发中...</div>';
+      }
+    }
+    
+    function getPageIcon(page) {
+      const icons = {home:'🏠',exam:'📅',practice:'📝',xingce:'📚',shenlun:'✍️',community:'💬',plan:'📋',profile:'⚙️'};
+      return icons[page] || '';
+    }
+    
+    function getPageTitle(page) {
+      const titles = {home:'首页',exam:'考试情况',practice:'刷题记录',xingce:'行测职测',shenlun:'申论综应',community:'社区',plan:'计划和课程',profile:'我的'};
+      return titles[page] || '';
     }
   </script>
 </body>
