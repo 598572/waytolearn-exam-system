@@ -127,7 +127,26 @@
       </div>
     </main>
   </div>
+  <!-- 飞书 JS SDK -->
+  <script src="https://lf1-cdn-tos.bytegoofy.com/obj/goofy/feishu-design/larkopenjs-2.0.js"></script>
   <script>
+    // 飞书用户信息
+    let feishuUser = { name: '择风', email: '' };
+    
+    // 初始化飞书 SDK
+    window.onload = async function() {
+      try {
+        // 获取当前用户信息
+        const user = await window.lark.user.get();
+        if (user && user.name) {
+          feishuUser.name = user.name;
+          document.querySelector('.user-info').textContent = user.name;
+        }
+      } catch (e) {
+        console.log('飞书 SDK 初始化失败，使用默认用户');
+      }
+    };
+    
     // 倒计时
     setInterval(() => {
       const target = new Date('2026-03-14T09:00:00');
